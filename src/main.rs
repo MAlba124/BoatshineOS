@@ -2,16 +2,21 @@
 #![no_main]
 
 use core::panic::PanicInfo;
-
-use boatshineos::vga;
+use boatshineos::println;
 
 #[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
+fn panic(info: &PanicInfo) -> ! {
+    println!("{}", info);
     loop {}
 }
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    vga::write_hello_world();
+    main();
+    panic!("main() exited");
     loop {}
+}
+
+fn main() {
+    println!("Kernel running");
 }
