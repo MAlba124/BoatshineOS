@@ -2,14 +2,15 @@
 name = "boatshineos"
 version = "0.1.0"
 edition = "2021"
+license = "./LICENSE"
+
+[build-dependencies]
+bootloader = "0.11"
+bs-kernel = { path = "kernel", artifact = "bin", target = "x86_64-unknown-none" }
 
 [dependencies]
-bootloader = "0.9"
-volatile = "0.2.6"
-spin = "0.9.8"
-# bootloader = "0.11.7"
-# volatile = "0.6.1"
+# used for UEFI booting in QEMU
+ovmf-prebuilt = "0.1.0-alpha.1"
 
-[dependencies.lazy_static]
-version = "1.0"
-features = ["spin_no_std"]
+[workspace]
+members = ["kernel"]
