@@ -29,20 +29,26 @@ fn kernel_init(boot_info: &'static mut BootInfo) -> ! {
 
     serial_println!("E9 port working");
 
-    interrupts::init_idt();
     gdt::init();
+    interrupts::init_idt();
+    interrupts::pic::init();
+    x86_64::instructions::interrupts::enable();
 
     log::info!("Kernel initialized");
 
     kernel_main();
 
-    loop {}
+    kernel_finished();
 }
 
 fn kernel_main() {
-    unsafe {
-        *(0xdeadbeef as *mut u8) = 42;
-    };
+    log::info!("In kernel_main");
+}
+
+fn kernel_finished() -> ! {
+    loop {
+        x86_64::instructions::hlt();
+    }
 }
 
 entry_point!(kernel_init);

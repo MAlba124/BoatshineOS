@@ -10,6 +10,9 @@ use x86_64::instructions::port::{PortGeneric, ReadWriteAccess};
 use crate::framebuffer::FrameBufferWriter;
 
 static LOGGER: OnceCell<LockedLogger> = OnceCell::uninit();
+lazy_static::lazy_static! {
+    static ref DEBUG_SERIAL_PORT: Spinlock<DebugSerialPort> = Spinlock::new(DebugSerialPort::default());
+}
 
 pub fn init_logger(fb: &'static mut [u8], info: FrameBufferInfo) {
     let logger = LOGGER.get_or_init(move || LockedLogger::new(fb, info));
@@ -36,17 +39,35 @@ impl log::Log for LockedLogger {
     }
 
     fn log(&self, record: &log::Record) {
-        if let Some(fb) = &self.framebuffer {
-            let mut fb = fb.lock();
-            writeln!(fb, "{:5}: {}", record.level(), record.args()).unwrap();
-        }
+        use x86_64::instructions::interrupts;
+
+        interrupts::without_interrupts(|| {
+            if let Some(fb) = &self.framebuffer {
+                let mut fb = fb.lock();
+                writeln!(fb, "{:5}: {}", record.level(), record.args()).unwrap();
+            }
+        });
     }
 
     fn flush(&self) {}
 }
 
-lazy_static::lazy_static! {
-    static ref DEBUG_SERIAL_PORT: Spinlock<DebugSerialPort> = Spinlock::new(DebugSerialPort::default());
+#[doc(hidden)]
+pub fn _print(args: ::core::fmt::Arguments) {
+    use core::fmt::Write;
+    use x86_64::instructions::interrupts;
+
+    interrupts::without_interrupts(|| {
+        match LOGGER.get() {
+            Some(logger) => {
+                if let Some(fb) = &logger.framebuffer {
+                    let mut fb = fb.lock();
+                    write!(fb, "{}", args).unwrap();
+                }
+            }
+            None => {}
+        }
+    });
 }
 
 struct DebugSerialPort {
@@ -81,10 +102,14 @@ impl fmt::Write for DebugSerialPort {
 #[doc(hidden)]
 pub fn _serial_print(args: ::core::fmt::Arguments) {
     use core::fmt::Write;
-    DEBUG_SERIAL_PORT
-        .lock()
-        .write_fmt(args)
-        .expect("Printing to serial failed");
+    use x86_64::instructions::interrupts;
+
+    interrupts::without_interrupts(|| {
+        DEBUG_SERIAL_PORT
+            .lock()
+            .write_fmt(args)
+            .expect("Printing to serial failed");
+    });
 }
 
 #[macro_export]

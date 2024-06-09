@@ -17,9 +17,9 @@
 #![no_std]
 
 // pub mod vga;
+pub mod macros;
 pub mod framebuffer;
 pub mod panic;
-// pub mod macros;
 pub mod gdt;
 pub mod interrupts;
 pub mod logger;
