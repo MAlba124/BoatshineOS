@@ -12,14 +12,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with BoatshineOS.  If not, see <https://www.gnu.org/licenses/>.
+use core::panic::PanicInfo;
 
-#![feature(abi_x86_interrupt)]
-#![no_std]
-
-// pub mod vga;
-pub mod framebuffer;
-pub mod panic;
-// pub mod macros;
-pub mod gdt;
-pub mod interrupts;
-pub mod logger;
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    log::error!("{}", info);
+    loop {}
+}

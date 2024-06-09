@@ -15,18 +15,10 @@
 #![no_std]
 #![no_main]
 
-use core::panic::PanicInfo;
-use bs_kernel::logger::init_logger;
 use bootloader_api::{entry_point, BootInfo};
+use bs_kernel::{gdt, interrupts, logger::init_logger, serial_println};
 
-#[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
-    log::error!("{}", info);
-    loop {}
-}
-
-fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
-    // println!("Kernel running");
+fn kernel_init(boot_info: &'static mut BootInfo) -> ! {
     match boot_info.framebuffer.as_mut() {
         Some(&mut ref mut framebuffer) => {
             let info = framebuffer.info();
@@ -34,11 +26,23 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
         }
         None => panic!("no framebuffer"),
     }
-    // let mut fb = &'static mut .unwrap();
-    // let fb_info = fb.info();
-    // init_logger(fb.buffer_mut(), fb_info);
+
+    serial_println!("E9 port working");
+
+    interrupts::init_idt();
+    gdt::init();
+
+    log::info!("Kernel initialized");
+
+    kernel_main();
 
     loop {}
 }
 
-entry_point!(kernel_main);
+fn kernel_main() {
+    unsafe {
+        *(0xdeadbeef as *mut u8) = 42;
+    };
+}
+
+entry_point!(kernel_init);

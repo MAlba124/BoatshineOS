@@ -14,3 +14,7 @@ ovmf-prebuilt = "0.1.0-alpha.1"
 
 [workspace]
 members = ["kernel"]
+
+[profile.dev.package."*"]
+debug = false
+opt-level = 3
