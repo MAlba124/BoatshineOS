@@ -16,7 +16,7 @@
 #![no_main]
 
 use bootloader_api::{entry_point, BootInfo};
-use bs_kernel::{gdt, interrupts, logger::init_logger, serial_println};
+use bs_kernel::{gdt, interrupts, logger::init_logger, println, serial_print, serial_println};
 
 fn kernel_init(boot_info: &'static mut BootInfo) -> ! {
     match boot_info.framebuffer.as_mut() {
@@ -34,7 +34,7 @@ fn kernel_init(boot_info: &'static mut BootInfo) -> ! {
     interrupts::pic::init();
     x86_64::instructions::interrupts::enable();
 
-    log::info!("Kernel initialized");
+    println!("Kernel initialized");
 
     kernel_main();
 
@@ -42,7 +42,7 @@ fn kernel_init(boot_info: &'static mut BootInfo) -> ! {
 }
 
 fn kernel_main() {
-    log::info!("In kernel_main");
+    println!("In kernel_main");
 }
 
 fn kernel_finished() -> ! {
