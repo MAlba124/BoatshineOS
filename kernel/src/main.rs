@@ -16,7 +16,7 @@
 #![no_main]
 
 use bootloader_api::{entry_point, BootInfo};
-use bs_kernel::{gdt, interrupts, logger::init_logger, println, serial_print, serial_println};
+use bs_kernel::{gdt, interrupts, logger::init_logger, println, serial_println};
 
 fn kernel_init(boot_info: &'static mut BootInfo) -> ! {
     match boot_info.framebuffer.as_mut() {

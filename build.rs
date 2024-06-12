@@ -8,10 +8,10 @@ fn main() {
     let kernel = PathBuf::from(std::env::var_os("CARGO_BIN_FILE_BS_KERNEL_bs-kernel").unwrap());
 
     // create an UEFI disk image (optional)
-    let uefi_path = out_dir.join("uefi.img");
-    bootloader::UefiBoot::new(&kernel)
-        .create_disk_image(&uefi_path)
-        .unwrap();
+    // let uefi_path = out_dir.join("uefi.img");
+    // bootloader::UefiBoot::new(&kernel)
+    //     .create_disk_image(&uefi_path)
+    //     .unwrap();
 
     // create a BIOS disk image
     let bios_path = out_dir.join("bios.img");
@@ -20,6 +20,6 @@ fn main() {
         .unwrap();
 
     // pass the disk image paths as env variables to the `main.rs`
-    println!("cargo:rustc-env=UEFI_PATH={}", uefi_path.display());
+    // println!("cargo:rustc-env=UEFI_PATH={}", uefi_path.display());
     println!("cargo:rustc-env=BIOS_PATH={}", bios_path.display());
 }

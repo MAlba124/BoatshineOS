@@ -128,10 +128,9 @@ extern "x86-interrupt" fn general_protection_fault_handler(
 
 extern "x86-interrupt" fn page_fault_handler(
     stack_frame: InterruptStackFrame,
-    _error_code: PageFaultErrorCode,
+    error_code: PageFaultErrorCode,
 ) {
-    serial_println!("EXCEPTION: PAGE FAULT\n{:#?}", stack_frame);
-    println!("EXCEPTION: PAGE FAULT\n{:#?}", stack_frame);
+    panic!("EXCEPTION: PAGE FAULT\nError Code: {error_code:?}\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn x87_floating_point_handler(stack_frame: InterruptStackFrame) {
