@@ -1,7 +1,7 @@
 use pic::PIC_1_OFFSET;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame, PageFaultErrorCode};
 
-use crate::{println, serial_print, serial_println};
+use crate::{println, serial_println};
 
 pub mod pic;
 
@@ -68,62 +68,52 @@ extern "x86-interrupt" fn double_fault_handler(
 }
 
 extern "x86-interrupt" fn invalid_opcode_handler(stack_frame: InterruptStackFrame) {
-    serial_println!("EXCEPTION: INVALID OPCODE\n{:#?}", stack_frame);
-    println!("EXCEPTION: INVALID OPCODE\n{:#?}", stack_frame);
+    panic!("EXCEPTION: INVALID OPCODE\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn divide_error_handler(stack_frame: InterruptStackFrame) {
-    serial_println!("EXCEPTION: DIVIDE ERROR\n{:#?}", stack_frame);
-    println!("EXCEPTION: DIVIDE ERROR\n{:#?}", stack_frame);
+    panic!("EXCEPTION: DIVIDE ERROR\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn non_maskable_interrupt_handler(stack_frame: InterruptStackFrame) {
-    serial_println!("EXCEPTION: NON MASKABLE INTERRUPT\n{:#?}", stack_frame);
-    println!("EXCEPTION: NON MASKABLE INTERRUPT\n{:#?}", stack_frame);
+    panic!("EXCEPTION: NON MASKABLE INTERRUPT\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn overflow_handler(stack_frame: InterruptStackFrame) {
-    serial_println!("EXCEPTION: OVERFLOW\n{:#?}", stack_frame);
-    println!("EXCEPTION: OVERFLOW\n{:#?}", stack_frame);
+    panic!("EXCEPTION: OVERFLOW\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn bound_range_exceeded_handler(stack_frame: InterruptStackFrame) {
-    serial_println!("EXCEPTION: BOUND RANGE EXCEEDED\n{:#?}", stack_frame);
-    println!("EXCEPTION: BOUND RANGE EXCEEDED\n{:#?}", stack_frame);
+    panic!("EXCEPTION: BOUND RANGE EXCEEDED\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn device_not_available_handler(stack_frame: InterruptStackFrame) {
-    serial_println!("EXCEPTION: DEVICE NOT AVAILABLE\n{:#?}", stack_frame);
-    println!("EXCEPTION: DEVICE NOT AVAILABLE\n{:#?}", stack_frame);
+    panic!("EXCEPTION: DEVICE NOT AVAILABLE\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn invalid_tss_handler(stack_frame: InterruptStackFrame, _error_code: u64) {
-    serial_println!("EXCEPTION: INVALID TSS\n{:#?}", stack_frame);
-    println!("EXCEPTION: INVALID TSS\n{:#?}", stack_frame);
+    panic!("EXCEPTION: INVALID TSS\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn segment_not_present_handler(
     stack_frame: InterruptStackFrame,
     _error_code: u64,
 ) {
-    serial_println!("EXCEPTION: SEGMENT NOT PRESENT\n{:#?}", stack_frame);
-    println!("EXCEPTION: SEGMENT NOT PRESENT\n{:#?}", stack_frame);
+    panic!("EXCEPTION: SEGMENT NOT PRESENT\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn stack_segment_fault_handler(
     stack_frame: InterruptStackFrame,
     _error_code: u64,
 ) {
-    serial_println!("EXCEPTION: STACK SEGMENT FAULT\n{:#?}", stack_frame);
-    println!("EXCEPTION: STACK SEGMENT FAULT\n{:#?}", stack_frame);
+    panic!("EXCEPTION: STACK SEGMENT FAULT\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn general_protection_fault_handler(
     stack_frame: InterruptStackFrame,
     _error_code: u64,
 ) {
-    serial_println!("EXCEPTION: GENERAL PROTECTION FAULT\n{:#?}", stack_frame);
-    println!("EXCEPTION: GENERAL PROTECTION FAULT\n{:#?}", stack_frame);
+    panic!("EXCEPTION: GENERAL PROTECTION FAULT\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn page_fault_handler(
@@ -137,89 +127,58 @@ extern "x86-interrupt" fn page_fault_handler(
 }
 
 extern "x86-interrupt" fn x87_floating_point_handler(stack_frame: InterruptStackFrame) {
-    serial_println!("EXCEPTION: X87 FLOATING POINT\n{:#?}", stack_frame);
-    println!("EXCEPTION: X87 FLOATING POINT\n{:#?}", stack_frame);
+    panic!("EXCEPTION: X87 FLOATING POINT\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn alignment_check_handler(
     stack_frame: InterruptStackFrame,
     _error_code: u64,
 ) {
-    serial_println!("EXCEPTION: ALIGNMENT CHECK\n{:#?}", stack_frame);
-    println!("EXCEPTION: ALIGNMENT CHECK\n{:#?}", stack_frame);
+    panic!("EXCEPTION: ALIGNMENT CHECK\n{:#?}", stack_frame);
 }
 
 // MACHINE CHECK: TODO
 
 extern "x86-interrupt" fn simd_floating_point_handler(stack_frame: InterruptStackFrame) {
-    serial_println!("EXCEPTION: SIMD FLOATING POINT\n{:#?}", stack_frame);
-    println!("EXCEPTION: SIMD FLOATING POINT\n{:#?}", stack_frame);
+    panic!("EXCEPTION: SIMD FLOATING POINT\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn virtualization_handler(stack_frame: InterruptStackFrame) {
-    serial_println!("EXCEPTION: VIRTUALIZATION\n{:#?}", stack_frame);
-    println!("EXCEPTION: VIRTUALIZATION\n{:#?}", stack_frame);
+    panic!("EXCEPTION: VIRTUALIZATION\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn cp_protection_exception_handler(
     stack_frame: InterruptStackFrame,
     _error_code: u64,
 ) {
-    serial_println!("EXCEPTION: CP PROTECTION EXCEPTION\n{:#?}", stack_frame);
-    println!("EXCEPTION: CP PROTECTION EXCEPTION\n{:#?}", stack_frame);
+    panic!("EXCEPTION: CP PROTECTION EXCEPTION\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn hv_injection_exception_handler(stack_frame: InterruptStackFrame) {
-    serial_println!("EXCEPTION: HV INJECTION EXCEPTION\n{:#?}", stack_frame);
-    println!("EXCEPTION: HV INJECTION EXCEPTION\n{:#?}", stack_frame);
+    panic!("EXCEPTION: HV INJECTION EXCEPTION\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn vmm_communication_exception_handler(
     stack_frame: InterruptStackFrame,
     _error_code: u64,
 ) {
-    serial_println!("EXCEPTION: VMM COMMUNICATION EXCEPTION\n{:#?}", stack_frame);
-    println!("EXCEPTION: VMM COMMUNICATION EXCEPTION\n{:#?}", stack_frame);
+    panic!("EXCEPTION: VMM COMMUNICATION EXCEPTION\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn security_exception_handler(
     stack_frame: InterruptStackFrame,
     _error_code: u64,
 ) {
-    serial_println!("EXCEPTION: SECURITY EXCEPTION\n{:#?}", stack_frame);
-    println!("EXCEPTION: SECURITY EXCEPTION\n{:#?}", stack_frame);
+    panic!("EXCEPTION: SECURITY EXCEPTION\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame) {
-    serial_print!(".");
-    // print!(".");
+    // serial_print!(".");
     pic::notify_end(InterruptIndex::Timer);
 }
 
 extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: InterruptStackFrame) {
-    // use pc_keyboard::{layouts, DecodedKey, HandleControl, Keyboard, ScancodeSet1};
-    // use spin::Mutex;
     use x86_64::instructions::port::Port;
-
-    // lazy_static::lazy_static! {
-    //     static ref KEYBOARD: Mutex<Keyboard<layouts::Us104Key, ScancodeSet1>> =
-    //         Mutex::new(Keyboard::new(ScancodeSet1::new(),
-    //             layouts::Us104Key, HandleControl::Ignore)
-    //         );
-    // }
-
-    // let mut keyboard = KEYBOARD.lock();
-    // let mut port = Port::new(0x60);
-
-    // let scancode: u8 = unsafe { port.read() };
-    // if let Ok(Some(key_event)) = keyboard.add_byte(scancode) {
-    //     if let Some(key) = keyboard.process_keyevent(key_event) {
-    //         match key {
-    //             DecodedKey::Unicode(character) => print!("{}", character),
-    //             DecodedKey::RawKey(key) => print!("{:?}", key),
-    //         }
-    //     }
-    // }
 
     let mut port = Port::new(0x60);
     let scancode: u8 = unsafe { port.read() };

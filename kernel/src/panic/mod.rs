@@ -14,13 +14,10 @@
 // along with BoatshineOS.  If not, see <https://www.gnu.org/licenses/>.
 use core::panic::PanicInfo;
 
-use crate::{println, serial_println};
-
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     x86_64::instructions::interrupts::disable();
-    println!("{info}");
-    serial_println!("{}", info);
+    log::error!("{info}");
     loop {
         x86_64::instructions::hlt();
     }

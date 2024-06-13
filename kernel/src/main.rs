@@ -22,7 +22,7 @@ use bs_kernel::{
     allocator, gdt, interrupts,
     logger::init_logger,
     memory::{self, BootInfoFrameAllocator},
-    println, serial_println,
+    serial_println,
     task::{executor::Executor, keyboard, Task},
 };
 use x86_64::VirtAddr;
