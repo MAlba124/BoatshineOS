@@ -18,6 +18,7 @@
 
 extern crate alloc;
 
+pub mod allocator;
 pub mod framebuffer;
 pub mod gdt;
 pub mod interrupts;
@@ -25,4 +26,4 @@ pub mod logger;
 pub mod macros;
 pub mod memory;
 pub mod panic;
-pub mod allocator;
+pub mod task;

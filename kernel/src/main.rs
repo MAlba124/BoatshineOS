@@ -18,7 +18,13 @@
 extern crate alloc;
 
 use bootloader_api::{entry_point, BootInfo, BootloaderConfig};
-use bs_kernel::{allocator, gdt, interrupts, logger::init_logger, memory::{self, BootInfoFrameAllocator}, println, serial_println};
+use bs_kernel::{
+    allocator, gdt, interrupts,
+    logger::init_logger,
+    memory::{self, BootInfoFrameAllocator},
+    println, serial_println,
+    task::{executor::Executor, keyboard, Task},
+};
 use x86_64::VirtAddr;
 
 pub static BOOTLOADER_CONFIG: BootloaderConfig = {
@@ -47,27 +53,31 @@ fn kernel_init(boot_info: &'static mut BootInfo) -> ! {
 
     let mut mapper = unsafe { memory::init(physical_memory_offset) };
 
-    let mut frame_allocator = unsafe {
-        BootInfoFrameAllocator::init(&boot_info.memory_regions)
-    };
+    let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_regions) };
 
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
     println!("Kernel initialized");
 
     kernel_main();
-
-    kernel_finished();
 }
 
-fn kernel_main() {
+async fn async_number() -> u32 {
+    42
+}
+
+async fn example_task() {
+    let number = async_number().await;
+    println!("async number: {}", number);
+}
+
+fn kernel_main() -> ! {
     println!("In kernel_main");
-}
 
-fn kernel_finished() -> ! {
-    loop {
-        x86_64::instructions::hlt();
-    }
+    let mut executor = Executor::new();
+    executor.spawn(Task::new(example_task()));
+    executor.spawn(Task::new(keyboard::print_keypresses()));
+    executor.run();
 }
 
 entry_point!(kernel_init, config = &BOOTLOADER_CONFIG);

@@ -7,7 +7,6 @@ use x86_64::{
     VirtAddr,
 };
 
-
 #[global_allocator]
 static ALLOCATOR: LockedHeap = LockedHeap::empty();
 
@@ -29,14 +28,14 @@ pub fn init_heap(
             .allocate_frame()
             .ok_or(MapToError::FrameAllocationFailed)?;
         let flags = PageTableFlags::PRESENT | PageTableFlags::WRITABLE;
-        unsafe {
-            mapper.map_to(page, frame, flags, frame_allocator)?.flush()
-        };
+        unsafe { mapper.map_to(page, frame, flags, frame_allocator)?.flush() };
     }
 
     let heap_size = heap_end - heap_start;
     unsafe {
-        ALLOCATOR.lock().init(heap_start.as_mut_ptr(), heap_size as usize);
+        ALLOCATOR
+            .lock()
+            .init(heap_start.as_mut_ptr(), heap_size as usize);
     }
 
     Ok(())
