@@ -5,7 +5,7 @@
 ## TODO
 
  - [ ] PS2 Keyboard driver
- - [ ] Paging
+ - [x] Paging
  - [ ] VFS
  - [ ] Userspace
     + [ ] API for creating userspace applications
