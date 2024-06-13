@@ -18,6 +18,7 @@ use crate::{println, serial_println};
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
+    x86_64::instructions::interrupts::disable();
     println!("{info}");
     serial_println!("{}", info);
     loop {

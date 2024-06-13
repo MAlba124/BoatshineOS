@@ -15,8 +15,17 @@
 #![no_std]
 #![no_main]
 
-use bootloader_api::{entry_point, BootInfo};
-use bs_kernel::{gdt, interrupts, logger::init_logger, println, serial_println};
+extern crate alloc;
+
+use bootloader_api::{entry_point, BootInfo, BootloaderConfig};
+use bs_kernel::{allocator, gdt, interrupts, logger::init_logger, memory::{self, BootInfoFrameAllocator}, println, serial_println};
+use x86_64::VirtAddr;
+
+pub static BOOTLOADER_CONFIG: BootloaderConfig = {
+    let mut config = BootloaderConfig::new_default();
+    config.mappings.physical_memory = Some(bootloader_api::config::Mapping::Dynamic);
+    config
+};
 
 fn kernel_init(boot_info: &'static mut BootInfo) -> ! {
     match boot_info.framebuffer.as_mut() {
@@ -33,6 +42,16 @@ fn kernel_init(boot_info: &'static mut BootInfo) -> ! {
     interrupts::init_idt();
     interrupts::pic::init();
     x86_64::instructions::interrupts::enable();
+
+    let physical_memory_offset = VirtAddr::new(boot_info.physical_memory_offset.take().unwrap());
+
+    let mut mapper = unsafe { memory::init(physical_memory_offset) };
+
+    let mut frame_allocator = unsafe {
+        BootInfoFrameAllocator::init(&boot_info.memory_regions)
+    };
+
+    allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
     println!("Kernel initialized");
 
@@ -51,4 +70,4 @@ fn kernel_finished() -> ! {
     }
 }
 
-entry_point!(kernel_init);
+entry_point!(kernel_init, config = &BOOTLOADER_CONFIG);
