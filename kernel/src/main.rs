@@ -57,25 +57,13 @@ fn kernel_init(boot_info: &'static mut BootInfo) -> ! {
 
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
-    println!("Kernel initialized");
+    log::info!("Kernel initialized");
 
     kernel_main();
 }
 
-async fn async_number() -> u32 {
-    42
-}
-
-async fn example_task() {
-    let number = async_number().await;
-    println!("async number: {}", number);
-}
-
 fn kernel_main() -> ! {
-    println!("In kernel_main");
-
     let mut executor = Executor::new();
-    executor.spawn(Task::new(example_task()));
     executor.spawn(Task::new(keyboard::print_keypresses()));
     executor.run();
 }
